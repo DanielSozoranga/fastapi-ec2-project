@@ -9,7 +9,7 @@ Este proyecto es una **API RESTful simple** creada con **FastAPI**, que maneja *
 - Python 3.10 o superior  
 - pip  
 - Git  
-- (Opcional para producción) Node.js y pm2  
+- Node.js y pm2  
 
 ---
 

@@ -1,0 +1,4 @@
+venv/
+todo-frontend/
+credenciales.env
+__pycache__/ 

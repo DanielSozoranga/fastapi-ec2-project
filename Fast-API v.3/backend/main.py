@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import Column, Integer, String, Boolean, Text
 from typing import Optional, List
 from pydantic import BaseModel
+from fastapi.middleware.cors import CORSMiddleware
 import database
 
 # --------------------------
@@ -35,7 +36,7 @@ class TaskUpdate(BaseModel):
 class TaskOut(TaskBase):
     id: int
     class Config:
-        orm_mode = True  # si usas Pydantic v2, cambiar a from_attributes=True
+        orm_mode = True
 
 # --------------------------
 # Dependencia de DB
@@ -48,14 +49,25 @@ def get_db():
         db.close()
 
 # --------------------------
-# Crear tablas automáticamente
-# --------------------------
-database.Base.metadata.create_all(bind=database.engine)
-
-# --------------------------
 # FastAPI app
 # --------------------------
 app = FastAPI(title="ToDo API")
+
+# --------------------------
+# CONFIGURACIÓN CORS (DEBE IR INMEDIATAMENTE DESPUÉS DE CREAR LA APP)
+# --------------------------
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],  # URL de React
+    allow_credentials=True,
+    allow_methods=["*"],  # Permitir todos los métodos
+    allow_headers=["*"],  # Permitir todos los headers
+)
+
+# --------------------------
+# Crear tablas automáticamente (DESPUÉS del CORS)
+# --------------------------
+database.Base.metadata.create_all(bind=database.engine)
 
 # --------------------------
 # Endpoints
@@ -98,3 +110,8 @@ def delete_task(task_id: int, db: Session = Depends(get_db)):
     db.delete(task)
     db.commit()
     return task
+
+# Endpoint de salud para probar
+@app.get("/")
+def read_root():
+    return {"message": "FastAPI is running!"}

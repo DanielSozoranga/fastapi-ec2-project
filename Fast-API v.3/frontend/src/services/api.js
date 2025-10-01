@@ -1,10 +1,13 @@
 import axios from 'axios';
 
-// Para desarrollo local
-const API_BASE_URL = 'ip-172-31-23-133.ec2.internal';
+// ✅ CORREGIDO - Usa la IP pública de tu EC2
+const API_BASE_URL = 'http://18.232.139.73:8080';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
 });
 
 export const taskService = {
